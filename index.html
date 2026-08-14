@@ -2,384 +2,445 @@
 <html lang="es">
 
 <head>
-
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
   >
 
-  <title>Modelo 3D - Realidad Aumentada</title>
-
+  <title>Teorema de Pitágoras - Árbol</title>
 
   <!-- A-FRAME -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-
   <!-- MINDAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-
   <style>
-
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-
       width: 100%;
       height: 100%;
-
       overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
+    .a-enter-vr,
+    .a-enter-vr-button,
+    .a-enter-ar,
+    .a-enter-ar-button {
+      display: none !important;
+    }
+
+    #estado {
+      position: fixed;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: rgba(0,0,0,0.75);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    #info {
+      position: fixed;
+      top: 58px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 520px;
+      z-index: 9999;
+      background: rgba(255,255,255,0.95);
+      color: #111;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.35;
+      display: none;
+    }
+
+    #controles {
+      position: fixed;
+      bottom: 18px;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      background: white;
+      color: #222;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.35);
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
   </style>
-
 </head>
-
 
 <body>
 
+<div id="estado">
+  Enfoca la imagen para comenzar
+</div>
+
+<div id="info"></div>
+
+<div id="controles">
+  <button id="btnDatos" disabled>DATOS</button>
+  <button id="btnTriangulo" disabled>TRIÁNGULO</button>
+  <button id="btnFormula" disabled>FÓRMULA</button>
+  <button id="btnRespuesta" disabled>RESPUESTA</button>
+  <button id="btnReiniciar" disabled>REINICIAR</button>
+</div>
 
 <a-scene
-
   mindar-image="imageTargetSrc: ./targets.mind;"
-
   vr-mode-ui="enabled: false"
-
   device-orientation-permission-ui="enabled: false"
-
+  renderer="colorManagement: true;"
 >
 
-
-  <!-- ================================================= -->
-  <!-- MODELO 3D                                         -->
-  <!-- ================================================= -->
-
-  <a-assets>
-
-    <a-asset-item
-      id="modelo3D"
-      src="./scene.gltf">
-    </a-asset-item>
-
-  </a-assets>
-
-
-
-  <!-- ================================================= -->
-  <!-- CÁMARA                                            -->
-  <!-- ================================================= -->
-
   <a-camera
-
     position="0 0 0"
-
     look-controls="enabled: false">
-
   </a-camera>
 
+  <a-entity id="target" mindar-image-target="targetIndex: 0">
 
+    <!-- SUELO -->
+    <a-box
+      position="0 -0.005 0.02"
+      width="1.08"
+      height="0.01"
+      depth="0.03"
+      color="#6d4c41">
+    </a-box>
 
-  <!-- ================================================= -->
-  <!-- IMAGEN OBJETIVO                                   -->
-  <!-- ================================================= -->
+    <!-- ÁRBOL -->
+    <a-cylinder
+      position="0.25 0.16 0.03"
+      radius="0.03"
+      height="0.32"
+      color="#8d6e63">
+    </a-cylinder>
 
-  <a-entity
+    <a-cone
+      position="0.25 0.38 0.03"
+      radius-bottom="0.16"
+      radius-top="0.02"
+      height="0.20"
+      color="#43a047">
+    </a-cone>
 
-    id="target"
+    <a-sphere
+      position="0.25 0.46 0.03"
+      radius="0.07"
+      color="#4caf50">
+    </a-sphere>
 
-    mindar-image-target="targetIndex: 0"
+    <!-- HUMANO -->
+    <!-- piernas -->
+    <a-box
+      position="-0.27 0.025 0.03"
+      width="0.015"
+      height="0.05"
+      depth="0.015"
+      color="#3949ab">
+    </a-box>
 
-  >
+    <a-box
+      position="-0.23 0.025 0.03"
+      width="0.015"
+      height="0.05"
+      depth="0.015"
+      color="#3949ab">
+    </a-box>
 
+    <!-- torso -->
+    <a-box
+      position="-0.25 0.075 0.03"
+      width="0.05"
+      height="0.05"
+      depth="0.02"
+      color="#ef5350">
+    </a-box>
 
-    <!-- MODELO -->
+    <!-- cabeza -->
+    <a-sphere
+      position="-0.25 0.105 0.03"
+      radius="0.018"
+      color="#ffcc80">
+    </a-sphere>
 
+    <!-- punto del ojo -->
+    <a-sphere
+      position="-0.25 0.106 0.055"
+      radius="0.008"
+      color="#111111">
+    </a-sphere>
+
+    <!-- punto cima árbol -->
+    <a-sphere
+      id="puntoTop"
+      position="0.25 0.481 0.055"
+      radius="0.010"
+      color="#ff9800"
+      visible="false">
+    </a-sphere>
+
+    <!-- punto ángulo recto -->
+    <a-sphere
+      id="puntoRecto"
+      position="0.25 0.106 0.055"
+      radius="0.008"
+      color="#7b1fa2"
+      visible="false">
+    </a-sphere>
+
+    <!-- TRIÁNGULO -->
+    <!-- horizontal = 8 m -->
     <a-entity
-
-      id="modelo"
-
-      gltf-model="#modelo3D">
-
+      id="lineaHorizontal"
+      line="start: -0.25 0.106 0.055; end: 0.25 0.106 0.055; color: #1e88e5"
+      visible="false">
     </a-entity>
 
+    <!-- vertical = 6 m -->
+    <a-entity
+      id="lineaVertical"
+      line="start: 0.25 0.106 0.055; end: 0.25 0.481 0.055; color: #43a047"
+      visible="false">
+    </a-entity>
+
+    <!-- hipotenusa = 10 m -->
+    <a-entity
+      id="lineaHipotenusa"
+      line="start: -0.25 0.106 0.055; end: 0.25 0.481 0.055; color: #e53935"
+      visible="false">
+    </a-entity>
+
+    <!-- escuadra ángulo recto -->
+    <a-entity
+      id="rectaA"
+      line="start: 0.22 0.106 0.055; end: 0.22 0.136 0.055; color: #7b1fa2"
+      visible="false">
+    </a-entity>
+
+    <a-entity
+      id="rectaB"
+      line="start: 0.22 0.136 0.055; end: 0.25 0.136 0.055; color: #7b1fa2"
+      visible="false">
+    </a-entity>
+
+    <!-- ALTURA TOTAL DEL ÁRBOL -->
+    <a-entity
+      id="alturaTotalLinea"
+      line="start: 0.32 0 0.055; end: 0.32 0.481 0.055; color: #fb8c00"
+      visible="false">
+    </a-entity>
+
+    <!-- TEXTOS -->
+    <a-text
+      id="txt8m"
+      value="8 m"
+      position="0 0.13 0.06"
+      align="center"
+      color="#1565c0"
+      width="1.5"
+      visible="false">
+    </a-text>
+
+    <a-text
+      id="txt10m"
+      value="10 m"
+      position="-0.03 0.33 0.06"
+      rotation="0 0 36"
+      align="center"
+      color="#c62828"
+      width="1.5"
+      visible="false">
+    </a-text>
+
+    <a-text
+      id="txt17m"
+      value="1.7 m"
+      position="-0.34 0.10 0.06"
+      align="center"
+      color="#5d4037"
+      width="1.5"
+      visible="false">
+    </a-text>
+
+    <a-text
+      id="txt6m"
+      value="6 m"
+      position="0.34 0.30 0.06"
+      align="center"
+      color="#2e7d32"
+      width="1.5"
+      visible="false">
+    </a-text>
+
+    <a-text
+      id="txtRespuesta"
+      value="Altura del arbol = 7.7 m"
+      position="0.05 0.58 0.06"
+      align="center"
+      color="#ef6c00"
+      width="3.2"
+      visible="false">
+    </a-text>
 
   </a-entity>
 
-
 </a-scene>
 
-
-
 <script>
-
-
-  /*
-  ========================================================
-  CONFIGURACIÓN
-  ========================================================
-
-  En MindAR:
-
-  ancho de imagen objetivo = 1
-
-  Nosotros queremos:
-
-  ancho del modelo = 1.25
-
-  Es decir, 125% del ancho de la imagen.
-  */
-
-
-  const ANCHO_MODELO = 1.25;
-
-
-  /*
-  Pequeña separación para que el modelo
-  no quede metido dentro de la imagen.
-  */
-
-  const SEPARACION = 0.02;
-
-
-
-  /*
-  ========================================================
-  OBTENER MODELO
-  ========================================================
-  */
-
-
-  const modelo =
-    document.querySelector("#modelo");
-
-
-
-  /*
-  ========================================================
-  CUANDO TERMINE DE CARGAR EL MODELO
-  ========================================================
-  */
-
-
-  modelo.addEventListener(
-
-    "model-loaded",
-
-    () => {
-
-
-      /*
-      Obtenemos el modelo real de Three.js
-      que está dentro de A-Frame.
-      */
-
-
-      const objeto3D =
-        modelo.getObject3D("mesh");
-
-
-      if (!objeto3D) {
-
-        console.error(
-          "No se pudo encontrar el modelo 3D."
-        );
-
-        return;
-
-      }
-
-
-
-      /*
-      Actualizamos sus coordenadas.
-      */
-
-
-      objeto3D.updateWorldMatrix(
-        true,
-        true
-      );
-
-
-
-      /*
-      Creamos una caja invisible alrededor
-      de todo el modelo.
-      */
-
-
-      const caja =
-        new THREE.Box3().setFromObject(
-          objeto3D
-        );
-
-
-
-      /*
-      Calculamos su tamaño.
-      */
-
-
-      const tamano =
-        new THREE.Vector3();
-
-
-      caja.getSize(
-        tamano
-      );
-
-
-
-      /*
-      Calculamos el centro.
-      */
-
-
-      const centro =
-        new THREE.Vector3();
-
-
-      caja.getCenter(
-        centro
-      );
-
-
-
-      /*
-      ====================================================
-      CALCULAR ESCALA
-      ====================================================
-
-      Ejemplo:
-
-      modelo original = 4 unidades de ancho
-
-      queremos = 1.25
-
-      escala:
-
-      1.25 / 4 = 0.3125
-
-      Esto se calcula automáticamente.
-      */
-
-
-      const escala =
-
-        ANCHO_MODELO /
-        tamano.x;
-
-
-
-      /*
-      Aplicamos la misma escala
-      en X, Y y Z.
-
-      Así NO deformamos el modelo.
-      */
-
-
-      modelo.object3D.scale.set(
-
-        escala,
-        escala,
-        escala
-
-      );
-
-
-
-      /*
-      ====================================================
-      CENTRAR MODELO
-      ====================================================
-      */
-
-
-      const posicionX =
-
-        -centro.x *
-        escala;
-
-
-      const posicionY =
-
-        -centro.y *
-        escala;
-
-
-
-      /*
-      ====================================================
-      COLOCARLO ENCIMA DE LA IMAGEN
-      ====================================================
-
-      Tomamos la parte trasera del modelo
-      y la colocamos ligeramente por encima
-      de la imagen objetivo.
-      */
-
-
-      const posicionZ =
-
-        -(caja.min.z * escala)
-        + SEPARACION;
-
-
-
-      modelo.object3D.position.set(
-
-        posicionX,
-        posicionY,
-        posicionZ
-
-      );
-
-
-
-      /*
-      Información para nosotros.
-
-      No aparece en pantalla.
-      Solo sirve si después necesitamos
-      revisar la consola.
-      */
-
-
-      console.log(
-        "Modelo cargado correctamente"
-      );
-
-
-      console.log(
-        "Ancho original:",
-        tamano.x
-      );
-
-
-      console.log(
-        "Ancho final:",
-        ANCHO_MODELO
-      );
-
-
-      console.log(
-        "Escala aplicada:",
-        escala
-      );
-
-
+  const target = document.querySelector("#target");
+  const estado = document.querySelector("#estado");
+  const info = document.querySelector("#info");
+
+  const btnDatos = document.querySelector("#btnDatos");
+  const btnTriangulo = document.querySelector("#btnTriangulo");
+  const btnFormula = document.querySelector("#btnFormula");
+  const btnRespuesta = document.querySelector("#btnRespuesta");
+  const btnReiniciar = document.querySelector("#btnReiniciar");
+
+  const botones = [btnDatos, btnTriangulo, btnFormula, btnRespuesta, btnReiniciar];
+
+  const datos = [
+    document.querySelector("#txt8m"),
+    document.querySelector("#txt10m"),
+    document.querySelector("#txt17m")
+  ];
+
+  const triangulo = [
+    document.querySelector("#lineaHorizontal"),
+    document.querySelector("#lineaVertical"),
+    document.querySelector("#lineaHipotenusa"),
+    document.querySelector("#rectaA"),
+    document.querySelector("#rectaB"),
+    document.querySelector("#puntoRecto"),
+    document.querySelector("#puntoTop"),
+    document.querySelector("#txt6m")
+  ];
+
+  const respuesta = [
+    document.querySelector("#alturaTotalLinea"),
+    document.querySelector("#txtRespuesta")
+  ];
+
+  let datosVisibles = false;
+  let trianguloVisible = false;
+  let respuestaVisible = false;
+  let formulaVisible = false;
+
+  function setVisible(lista, valor) {
+    lista.forEach(el => el.setAttribute("visible", valor));
+  }
+
+  function ocultarTodo() {
+    setVisible(datos, false);
+    setVisible(triangulo, false);
+    setVisible(respuesta, false);
+    info.style.display = "none";
+
+    datosVisibles = false;
+    trianguloVisible = false;
+    respuestaVisible = false;
+    formulaVisible = false;
+
+    btnDatos.textContent = "DATOS";
+    btnTriangulo.textContent = "TRIÁNGULO";
+    btnFormula.textContent = "FÓRMULA";
+    btnRespuesta.textContent = "RESPUESTA";
+  }
+
+  target.addEventListener("targetFound", () => {
+    estado.textContent = "Imagen detectada ✓";
+    botones.forEach(btn => btn.disabled = false);
+  });
+
+  target.addEventListener("targetLost", () => {
+    estado.textContent = "Enfoca la imagen para continuar";
+    botones.forEach(btn => btn.disabled = true);
+    info.style.display = "none";
+  });
+
+  btnDatos.addEventListener("click", () => {
+    datosVisibles = !datosVisibles;
+    setVisible(datos, datosVisibles);
+    btnDatos.textContent = datosVisibles ? "OCULTAR DATOS" : "DATOS";
+  });
+
+  btnTriangulo.addEventListener("click", () => {
+    trianguloVisible = !trianguloVisible;
+    setVisible(triangulo, trianguloVisible);
+    btnTriangulo.textContent = trianguloVisible ? "OCULTAR TRIÁNGULO" : "TRIÁNGULO";
+  });
+
+  btnFormula.addEventListener("click", () => {
+    formulaVisible = !formulaVisible;
+
+    if (formulaVisible) {
+      info.style.display = "block";
+      info.innerHTML = `
+        <strong>Teorema de Pitágoras</strong><br>
+        Hipotenusa² = cateto² + cateto²<br><br>
+        <strong>Datos:</strong><br>
+        Hipotenusa = 10 m<br>
+        Distancia horizontal = 8 m<br>
+        Altura de los ojos = 1.7 m<br><br>
+        <strong>1)</strong> x = √(10² - 8²)<br>
+        x = √(100 - 64)<br>
+        x = √36<br>
+        x = 6 m<br><br>
+        <strong>2)</strong> Altura del árbol = 6 + 1.7 = <strong>7.7 m</strong>
+      `;
+      btnFormula.textContent = "OCULTAR FÓRMULA";
+    } else {
+      info.style.display = "none";
+      btnFormula.textContent = "FÓRMULA";
     }
+  });
 
-  );
+  btnRespuesta.addEventListener("click", () => {
+    respuestaVisible = !respuestaVisible;
+    setVisible(respuesta, respuestaVisible);
+    document.querySelector("#txt6m").setAttribute("visible", respuestaVisible || trianguloVisible);
+    btnRespuesta.textContent = respuestaVisible ? "OCULTAR RESPUESTA" : "RESPUESTA";
+  });
 
+  btnReiniciar.addEventListener("click", () => {
+    ocultarTodo();
+  });
 
+  ocultarTodo();
 </script>
 
-
 </body>
-
 </html>
