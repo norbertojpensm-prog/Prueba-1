@@ -7,10 +7,10 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    content="width=device-width, initial-scale=1"
   >
 
-  <title>Laboratorio RA - Modelo 3D</title>
+  <title>Modelo 3D RA</title>
 
 
   <!-- A-FRAME -->
@@ -23,107 +23,16 @@
 
   <style>
 
+    html,
     body {
+
       margin: 0;
+      padding: 0;
+
+      width: 100%;
+      height: 100%;
+
       overflow: hidden;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-
-    /* ----------------------------- */
-    /* ESTADO                        */
-    /* ----------------------------- */
-
-    #estado {
-
-      position: fixed;
-
-      top: 15px;
-      left: 50%;
-
-      transform: translateX(-50%);
-
-      z-index: 9999;
-
-      background: rgba(0, 0, 0, 0.75);
-
-      color: white;
-
-      padding: 9px 14px;
-
-      border-radius: 12px;
-
-      font-size: 14px;
-
-      text-align: center;
-
-      white-space: nowrap;
-
-    }
-
-
-    /* ----------------------------- */
-    /* CONTROLES                     */
-    /* ----------------------------- */
-
-    #controles {
-
-      position: fixed;
-
-      bottom: 20px;
-      left: 0;
-      right: 0;
-
-      z-index: 9999;
-
-      display: flex;
-
-      justify-content: center;
-
-      flex-wrap: wrap;
-
-      gap: 8px;
-
-      padding: 0 12px;
-
-    }
-
-
-    button {
-
-      border: none;
-
-      border-radius: 12px;
-
-      padding: 13px 16px;
-
-      font-size: 14px;
-
-      font-weight: bold;
-
-      background: white;
-
-      color: #222;
-
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
-
-      cursor: pointer;
-
-    }
-
-
-    button:active {
-
-      transform: scale(0.95);
-
-    }
-
-
-    button:disabled {
-
-      opacity: 0.35;
-
-      cursor: default;
 
     }
 
@@ -136,35 +45,18 @@
 <body>
 
 
-
-<!-- ====================================================== -->
-<!--                 ESCENA DE MINDAR                       -->
-<!-- ====================================================== -->
-
 <a-scene
 
-  mindar-image="
-    imageTargetSrc: ./targets.mind;
-    autoStart: true;
-  "
+  mindar-image="imageTargetSrc: ./targets.mind;"
 
   vr-mode-ui="enabled: false"
 
   device-orientation-permission-ui="enabled: false"
 
-  embedded
-
-  renderer="
-    colorManagement: true;
-    physicallyCorrectLights: true;
-  "
-
 >
 
 
-  <!-- ==================================================== -->
-  <!-- RECURSOS                                             -->
-  <!-- ==================================================== -->
+  <!-- MODELO 3D -->
 
   <a-assets>
 
@@ -177,9 +69,7 @@
 
 
 
-  <!-- ==================================================== -->
-  <!-- CÁMARA                                               -->
-  <!-- ==================================================== -->
+  <!-- CÁMARA -->
 
   <a-camera
 
@@ -191,662 +81,34 @@
 
 
 
-  <!-- ==================================================== -->
-  <!-- IMAGEN QUE MINDAR DEBE RECONOCER                     -->
-  <!-- ==================================================== -->
+  <!-- IMAGEN OBJETIVO -->
 
   <a-entity
-
-    id="target"
 
     mindar-image-target="targetIndex: 0"
 
   >
 
 
+    <!-- MODELO -->
 
-    <!-- ================================================== -->
-    <!-- CONTENEDOR DEL MODELO 3D                           -->
-    <!-- ================================================== -->
+    <a-gltf-model
 
-    <a-entity
+      src="#modelo3D"
 
-      id="contenedorModelo"
-
-      position="0 0 0.25"
+      position="0 0 0.30"
 
       rotation="0 0 0"
 
-      scale="0.25 0.25 0.25"
+      scale="0.60 0.60 0.60">
 
-    >
-
-
-
-      <!-- MODELO GLTF -->
-
-      <a-entity
-
-        id="modelo"
-
-        gltf-model="#modelo3D"
-
-        position="0 0 0"
-
-        rotation="0 0 0"
-
-        scale="1 1 1"
-
-      >
-
-      </a-entity>
-
-
-
-    </a-entity>
+    </a-gltf-model>
 
 
   </a-entity>
 
 
 </a-scene>
-
-
-
-
-
-<!-- ====================================================== -->
-<!--                    ESTADO                              -->
-<!-- ====================================================== -->
-
-<div id="estado">
-
-  Cargando modelo...
-
-</div>
-
-
-
-
-
-<!-- ====================================================== -->
-<!--                    BOTONES                             -->
-<!-- ====================================================== -->
-
-<div id="controles">
-
-
-  <button
-    id="btnGirar"
-    disabled>
-
-    GIRAR
-
-  </button>
-
-
-  <button
-    id="btnAumentar"
-    disabled>
-
-    + TAMAÑO
-
-  </button>
-
-
-  <button
-    id="btnReducir"
-    disabled>
-
-    − TAMAÑO
-
-  </button>
-
-
-  <button
-    id="btnArriba"
-    disabled>
-
-    ↑ SUBIR
-
-  </button>
-
-
-  <button
-    id="btnAbajo"
-    disabled>
-
-    ↓ BAJAR
-
-  </button>
-
-
-  <button
-    id="btnReiniciar"
-    disabled>
-
-    REINICIAR
-
-  </button>
-
-
-</div>
-
-
-
-
-
-<!-- ====================================================== -->
-<!--                 PROGRAMACIÓN                           -->
-<!-- ====================================================== -->
-
-<script>
-
-
-  /* ------------------------------------------------------ */
-  /* ELEMENTOS                                              */
-  /* ------------------------------------------------------ */
-
-
-  const target =
-    document.querySelector("#target");
-
-
-  const modelo =
-    document.querySelector("#modelo");
-
-
-  const contenedorModelo =
-    document.querySelector("#contenedorModelo");
-
-
-  const estado =
-    document.querySelector("#estado");
-
-
-
-  const btnGirar =
-    document.querySelector("#btnGirar");
-
-
-  const btnAumentar =
-    document.querySelector("#btnAumentar");
-
-
-  const btnReducir =
-    document.querySelector("#btnReducir");
-
-
-  const btnArriba =
-    document.querySelector("#btnArriba");
-
-
-  const btnAbajo =
-    document.querySelector("#btnAbajo");
-
-
-  const btnReiniciar =
-    document.querySelector("#btnReiniciar");
-
-
-
-  const botones = [
-
-    btnGirar,
-    btnAumentar,
-    btnReducir,
-    btnArriba,
-    btnAbajo,
-    btnReiniciar
-
-  ];
-
-
-
-  /* ------------------------------------------------------ */
-  /* VARIABLES                                              */
-  /* ------------------------------------------------------ */
-
-
-  let escala = 0.25;
-
-  let posicionY = 0;
-
-  let girando = false;
-
-  let modeloCargado = false;
-
-
-
-  /* ------------------------------------------------------ */
-  /* MODELO CARGADO                                         */
-  /* ------------------------------------------------------ */
-
-
-  modelo.addEventListener(
-
-    "model-loaded",
-
-    () => {
-
-
-      modeloCargado = true;
-
-
-      estado.textContent =
-        "Modelo listo. Busca la imagen...";
-
-
-      console.log(
-        "Modelo 3D cargado correctamente"
-      );
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* ERROR AL CARGAR MODELO                                 */
-  /* ------------------------------------------------------ */
-
-
-  modelo.addEventListener(
-
-    "model-error",
-
-    (evento) => {
-
-
-      estado.textContent =
-        "Error al cargar el modelo 3D";
-
-
-      console.error(
-        "Error al cargar modelo:",
-        evento.detail
-      );
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* IMAGEN ENCONTRADA                                      */
-  /* ------------------------------------------------------ */
-
-
-  target.addEventListener(
-
-    "targetFound",
-
-    () => {
-
-
-      if (modeloCargado) {
-
-        estado.textContent =
-          "Imagen detectada ✓";
-
-      }
-
-      else {
-
-        estado.textContent =
-          "Imagen detectada - cargando modelo...";
-
-      }
-
-
-      botones.forEach(
-
-        boton => {
-
-          boton.disabled = false;
-
-        }
-
-      );
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* IMAGEN PERDIDA                                         */
-  /* ------------------------------------------------------ */
-
-
-  target.addEventListener(
-
-    "targetLost",
-
-    () => {
-
-
-      estado.textContent =
-        "Busca nuevamente la imagen...";
-
-
-      botones.forEach(
-
-        boton => {
-
-          boton.disabled = true;
-
-        }
-
-      );
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* GIRAR / DETENER                                        */
-  /* ------------------------------------------------------ */
-
-
-  btnGirar.addEventListener(
-
-    "click",
-
-    () => {
-
-
-      if (girando === false) {
-
-
-        contenedorModelo.setAttribute(
-
-          "animation__giro",
-
-          {
-
-            property: "rotation",
-
-            from: "0 0 0",
-
-            to: "0 360 0",
-
-            loop: true,
-
-            dur: 8000,
-
-            easing: "linear"
-
-          }
-
-        );
-
-
-        girando = true;
-
-
-        btnGirar.textContent =
-          "DETENER GIRO";
-
-
-      }
-
-      else {
-
-
-        contenedorModelo.removeAttribute(
-          "animation__giro"
-        );
-
-
-        girando = false;
-
-
-        btnGirar.textContent =
-          "GIRAR";
-
-
-      }
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* AUMENTAR                                               */
-  /* ------------------------------------------------------ */
-
-
-  btnAumentar.addEventListener(
-
-    "click",
-
-    () => {
-
-
-      escala = escala + 0.05;
-
-
-      contenedorModelo.setAttribute(
-
-        "scale",
-
-        `${escala} ${escala} ${escala}`
-
-      );
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* REDUCIR                                                */
-  /* ------------------------------------------------------ */
-
-
-  btnReducir.addEventListener(
-
-    "click",
-
-    () => {
-
-
-      escala = escala - 0.05;
-
-
-      if (escala < 0.05) {
-
-        escala = 0.05;
-
-      }
-
-
-      contenedorModelo.setAttribute(
-
-        "scale",
-
-        `${escala} ${escala} ${escala}`
-
-      );
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* SUBIR MODELO                                           */
-  /* ------------------------------------------------------ */
-
-
-  btnArriba.addEventListener(
-
-    "click",
-
-    () => {
-
-
-      posicionY = posicionY + 0.05;
-
-
-      contenedorModelo.setAttribute(
-
-        "position",
-
-        `0 ${posicionY} 0.25`
-
-      );
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* BAJAR MODELO                                           */
-  /* ------------------------------------------------------ */
-
-
-  btnAbajo.addEventListener(
-
-    "click",
-
-    () => {
-
-
-      posicionY = posicionY - 0.05;
-
-
-      contenedorModelo.setAttribute(
-
-        "position",
-
-        `0 ${posicionY} 0.25`
-
-      );
-
-
-    }
-
-  );
-
-
-
-
-
-  /* ------------------------------------------------------ */
-  /* REINICIAR                                              */
-  /* ------------------------------------------------------ */
-
-
-  btnReiniciar.addEventListener(
-
-    "click",
-
-    () => {
-
-
-      /* DETENER GIRO */
-
-
-      contenedorModelo.removeAttribute(
-        "animation__giro"
-      );
-
-
-      girando = false;
-
-
-      btnGirar.textContent =
-        "GIRAR";
-
-
-
-      /* ESCALA ORIGINAL */
-
-
-      escala = 0.25;
-
-
-      contenedorModelo.setAttribute(
-
-        "scale",
-
-        "0.25 0.25 0.25"
-
-      );
-
-
-
-      /* POSICIÓN ORIGINAL */
-
-
-      posicionY = 0;
-
-
-      contenedorModelo.setAttribute(
-
-        "position",
-
-        "0 0 0.25"
-
-      );
-
-
-
-      /* ROTACIÓN ORIGINAL */
-
-
-      contenedorModelo.setAttribute(
-
-        "rotation",
-
-        "0 0 0"
-
-      );
-
-
-    }
-
-  );
-
-
-</script>
 
 
 </body>
