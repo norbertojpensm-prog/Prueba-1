@@ -1,136 +1,1361 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Laboratorio RA - Cubo</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  >
 
+  <title>Laboratorio RA - El Cubo</title>
+
+
+  <!-- A-FRAME -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+
+  <!-- MINDAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
+
   <style>
+
     body {
       margin: 0;
       overflow: hidden;
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-    #interfaz {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 25px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
 
-    #btnCaras {
-      padding: 14px 25px;
-      font-size: 18px;
-      font-weight: bold;
-      border: none;
-      border-radius: 12px;
-      background-color: white;
-      color: #222;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.35);
-    }
-
-    #btnCaras:disabled {
-      opacity: 0.4;
-    }
+    /* PANEL DE INFORMACIÓN */
 
     #informacion {
-      display: none;
-      padding: 12px 20px;
-      border-radius: 12px;
-      background-color: rgba(0,0,0,0.8);
+
+      position: fixed;
+
+      top: 20px;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: calc(100% - 40px);
+      max-width: 500px;
+
+      box-sizing: border-box;
+
+      background: rgba(0, 0, 0, 0.82);
+
       color: white;
-      font-size: 18px;
+
+      padding: 12px 16px;
+
+      border-radius: 14px;
+
       text-align: center;
+
+      font-size: 17px;
+
+      display: none;
+
+      z-index: 9999;
     }
+
+
+    /* CONTROLES */
+
+    #controles {
+
+      position: fixed;
+
+      bottom: 20px;
+      left: 0;
+      right: 0;
+
+      padding: 0 12px;
+
+      z-index: 9999;
+
+      display: flex;
+
+      justify-content: center;
+
+      flex-wrap: wrap;
+
+      gap: 8px;
+    }
+
+
+    button {
+
+      border: none;
+
+      border-radius: 12px;
+
+      padding: 12px 14px;
+
+      font-size: 14px;
+
+      font-weight: bold;
+
+      background: white;
+
+      color: #222;
+
+      box-shadow: 0 3px 9px rgba(0,0,0,0.35);
+
+      cursor: pointer;
+    }
+
+
+    button:active {
+
+      transform: scale(0.95);
+
+    }
+
+
+    button:disabled {
+
+      opacity: 0.35;
+
+      cursor: default;
+
+    }
+
+
+    #estado {
+
+      position: fixed;
+
+      top: 10px;
+      right: 10px;
+
+      z-index: 9999;
+
+      background: rgba(0,0,0,0.65);
+
+      color: white;
+
+      padding: 7px 10px;
+
+      border-radius: 10px;
+
+      font-size: 12px;
+    }
+
+
   </style>
+
 </head>
+
 
 <body>
 
-  <a-scene
-    mindar-image="imageTargetSrc: ./targets.mind;"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false">
 
-    <a-camera
-      position="0 0 0"
-      look-controls="enabled: false">
-    </a-camera>
+
+<!-- ====================================================== -->
+<!--                 ESCENA REALIDAD AUMENTADA              -->
+<!-- ====================================================== -->
+
+
+<a-scene
+
+  mindar-image="imageTargetSrc: ./targets.mind;"
+
+  vr-mode-ui="enabled: false"
+
+  device-orientation-permission-ui="enabled: false"
+
+  embedded
+
+>
+
+
+  <!-- CÁMARA -->
+
+  <a-camera
+
+    position="0 0 0"
+
+    look-controls="enabled: false">
+
+  </a-camera>
+
+
+
+  <!-- ====================================================== -->
+  <!--                 IMAGEN OBJETIVO                         -->
+  <!-- ====================================================== -->
+
+
+  <a-entity
+
+    id="target"
+
+    mindar-image-target="targetIndex: 0"
+
+  >
+
+
+
+    <!-- ================================================== -->
+    <!--                 CUBO COMPLETO                      -->
+    <!-- ================================================== -->
+
 
     <a-entity
-      id="cubo-target"
-      mindar-image-target="targetIndex: 0">
+
+      id="grupoCubo"
+
+      position="0 0 0.25"
+
+      animation="
+        property: rotation;
+        to: 0 360 0;
+        loop: true;
+        dur: 7000;
+        easing: linear;
+      "
+
+    >
+
+
+
+      <!-- CUBO PRINCIPAL -->
 
       <a-box
-        position="0 0 0.2"
+
+        id="cubo"
+
         width="0.35"
+
         height="0.35"
+
         depth="0.35"
-        color="#4CC3D9"
-        animation="property: rotation;
-                   to: 0 360 0;
-                   loop: true;
-                   dur: 6000;
-                   easing: linear">
+
+        color="#42A5F5"
+
+      >
+
       </a-box>
+
+
+
+      <!-- ================================================== -->
+      <!--                     CARAS                          -->
+      <!-- ================================================== -->
+
+
+      <!-- FRONTAL -->
+
+      <a-plane
+
+        class="cara"
+
+        visible="false"
+
+        position="0 0 0.178"
+
+        width="0.35"
+
+        height="0.35"
+
+        material="
+          color: #FFD600;
+          opacity: 0.78;
+          transparent: true;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- TRASERA -->
+
+      <a-plane
+
+        class="cara"
+
+        visible="false"
+
+        position="0 0 -0.178"
+
+        rotation="0 180 0"
+
+        width="0.35"
+
+        height="0.35"
+
+        material="
+          color: #FFD600;
+          opacity: 0.78;
+          transparent: true;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- DERECHA -->
+
+      <a-plane
+
+        class="cara"
+
+        visible="false"
+
+        position="0.178 0 0"
+
+        rotation="0 90 0"
+
+        width="0.35"
+
+        height="0.35"
+
+        material="
+          color: #FFD600;
+          opacity: 0.78;
+          transparent: true;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- IZQUIERDA -->
+
+      <a-plane
+
+        class="cara"
+
+        visible="false"
+
+        position="-0.178 0 0"
+
+        rotation="0 -90 0"
+
+        width="0.35"
+
+        height="0.35"
+
+        material="
+          color: #FFD600;
+          opacity: 0.78;
+          transparent: true;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- SUPERIOR -->
+
+      <a-plane
+
+        class="cara"
+
+        visible="false"
+
+        position="0 0.178 0"
+
+        rotation="-90 0 0"
+
+        width="0.35"
+
+        height="0.35"
+
+        material="
+          color: #FFD600;
+          opacity: 0.78;
+          transparent: true;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- INFERIOR -->
+
+      <a-plane
+
+        class="cara"
+
+        visible="false"
+
+        position="0 -0.178 0"
+
+        rotation="90 0 0"
+
+        width="0.35"
+
+        height="0.35"
+
+        material="
+          color: #FFD600;
+          opacity: 0.78;
+          transparent: true;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+
+
+      <!-- ================================================== -->
+      <!--                  12 ARISTAS                        -->
+      <!-- ================================================== -->
+
+
+
+      <!-- 4 ARISTAS HORIZONTALES X -->
+
+
+      <a-box class="arista" visible="false"
+        position="0 0.175 0.175"
+        width="0.37" height="0.012" depth="0.012"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="0 -0.175 0.175"
+        width="0.37" height="0.012" depth="0.012"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="0 0.175 -0.175"
+        width="0.37" height="0.012" depth="0.012"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="0 -0.175 -0.175"
+        width="0.37" height="0.012" depth="0.012"
+        color="#FF1744">
+      </a-box>
+
+
+
+
+      <!-- 4 ARISTAS VERTICALES Y -->
+
+
+      <a-box class="arista" visible="false"
+        position="0.175 0 0.175"
+        width="0.012" height="0.37" depth="0.012"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="-0.175 0 0.175"
+        width="0.012" height="0.37" depth="0.012"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="0.175 0 -0.175"
+        width="0.012" height="0.37" depth="0.012"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="-0.175 0 -0.175"
+        width="0.012" height="0.37" depth="0.012"
+        color="#FF1744">
+      </a-box>
+
+
+
+
+      <!-- 4 ARISTAS DE PROFUNDIDAD Z -->
+
+
+      <a-box class="arista" visible="false"
+        position="0.175 0.175 0"
+        width="0.012" height="0.012" depth="0.37"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="-0.175 0.175 0"
+        width="0.012" height="0.012" depth="0.37"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="0.175 -0.175 0"
+        width="0.012" height="0.012" depth="0.37"
+        color="#FF1744">
+      </a-box>
+
+
+      <a-box class="arista" visible="false"
+        position="-0.175 -0.175 0"
+        width="0.012" height="0.012" depth="0.37"
+        color="#FF1744">
+      </a-box>
+
+
+
+
+
+      <!-- ================================================== -->
+      <!--                    8 VÉRTICES                      -->
+      <!-- ================================================== -->
+
+
+      <a-sphere class="vertice" visible="false"
+        position="0.175 0.175 0.175"
+        radius="0.025"
+        color="#00E676">
+      </a-sphere>
+
+
+      <a-sphere class="vertice" visible="false"
+        position="-0.175 0.175 0.175"
+        radius="0.025"
+        color="#00E676">
+      </a-sphere>
+
+
+      <a-sphere class="vertice" visible="false"
+        position="0.175 -0.175 0.175"
+        radius="0.025"
+        color="#00E676">
+      </a-sphere>
+
+
+      <a-sphere class="vertice" visible="false"
+        position="-0.175 -0.175 0.175"
+        radius="0.025"
+        color="#00E676">
+      </a-sphere>
+
+
+      <a-sphere class="vertice" visible="false"
+        position="0.175 0.175 -0.175"
+        radius="0.025"
+        color="#00E676">
+      </a-sphere>
+
+
+      <a-sphere class="vertice" visible="false"
+        position="-0.175 0.175 -0.175"
+        radius="0.025"
+        color="#00E676">
+      </a-sphere>
+
+
+      <a-sphere class="vertice" visible="false"
+        position="0.175 -0.175 -0.175"
+        radius="0.025"
+        color="#00E676">
+      </a-sphere>
+
+
+      <a-sphere class="vertice" visible="false"
+        position="-0.175 -0.175 -0.175"
+        radius="0.025"
+        color="#00E676">
+      </a-sphere>
+
 
     </a-entity>
 
-  </a-scene>
 
 
-  <div id="interfaz">
-
-    <div id="informacion">
-      El cubo tiene <strong>6 caras cuadradas</strong>.
-    </div>
-
-    <button id="btnCaras" disabled>
-      CARAS
-    </button>
-
-  </div>
 
 
-  <script>
 
-    const target = document.querySelector("#cubo-target");
-    const botonCaras = document.querySelector("#btnCaras");
-    const informacion = document.querySelector("#informacion");
+    <!-- ================================================== -->
+    <!--              DESARROLLO PLANO DEL CUBO             -->
+    <!-- ================================================== -->
 
 
-    target.addEventListener("targetFound", () => {
+    <a-entity
 
-      botonCaras.disabled = false;
+      id="desarrollo"
+
+      visible="false"
+
+      position="-0.08 0 0.08"
+
+    >
+
+
+      <!-- CUADRADO CENTRAL -->
+
+      <a-plane
+
+        position="0 0 0"
+
+        width="0.20"
+
+        height="0.20"
+
+        material="
+          color: #42A5F5;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- IZQUIERDA -->
+
+      <a-plane
+
+        position="-0.205 0 0"
+
+        width="0.20"
+
+        height="0.20"
+
+        material="
+          color: #64B5F6;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- DERECHA -->
+
+      <a-plane
+
+        position="0.205 0 0"
+
+        width="0.20"
+
+        height="0.20"
+
+        material="
+          color: #1E88E5;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- EXTREMO DERECHO -->
+
+      <a-plane
+
+        position="0.410 0 0"
+
+        width="0.20"
+
+        height="0.20"
+
+        material="
+          color: #1565C0;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- SUPERIOR -->
+
+      <a-plane
+
+        position="0 0.205 0"
+
+        width="0.20"
+
+        height="0.20"
+
+        material="
+          color: #90CAF9;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+
+      <!-- INFERIOR -->
+
+      <a-plane
+
+        position="0 -0.205 0"
+
+        width="0.20"
+
+        height="0.20"
+
+        material="
+          color: #2196F3;
+          side: double;
+        "
+
+      ></a-plane>
+
+
+    </a-entity>
+
+
+  </a-entity>
+
+
+</a-scene>
+
+
+
+
+
+<!-- ====================================================== -->
+<!--                      INTERFAZ                           -->
+<!-- ====================================================== -->
+
+
+<div id="estado">
+
+  Buscando imagen...
+
+</div>
+
+
+
+<div id="informacion"></div>
+
+
+
+<div id="controles">
+
+
+  <button id="btnCaras" disabled>
+    CARAS
+  </button>
+
+
+  <button id="btnAristas" disabled>
+    ARISTAS
+  </button>
+
+
+  <button id="btnVertices" disabled>
+    VÉRTICES
+  </button>
+
+
+  <button id="btnDesarrollo" disabled>
+    DESARROLLO
+  </button>
+
+
+  <button id="btnReiniciar" disabled>
+    REINICIAR
+  </button>
+
+
+</div>
+
+
+
+
+
+<!-- ====================================================== -->
+<!--                    PROGRAMACIÓN                         -->
+<!-- ====================================================== -->
+
+
+<script>
+
+
+  const target =
+    document.querySelector("#target");
+
+
+  const grupoCubo =
+    document.querySelector("#grupoCubo");
+
+
+  const desarrollo =
+    document.querySelector("#desarrollo");
+
+
+  const caras =
+    document.querySelectorAll(".cara");
+
+
+  const aristas =
+    document.querySelectorAll(".arista");
+
+
+  const vertices =
+    document.querySelectorAll(".vertice");
+
+
+
+  const btnCaras =
+    document.querySelector("#btnCaras");
+
+
+  const btnAristas =
+    document.querySelector("#btnAristas");
+
+
+  const btnVertices =
+    document.querySelector("#btnVertices");
+
+
+  const btnDesarrollo =
+    document.querySelector("#btnDesarrollo");
+
+
+  const btnReiniciar =
+    document.querySelector("#btnReiniciar");
+
+
+  const informacion =
+    document.querySelector("#informacion");
+
+
+  const estado =
+    document.querySelector("#estado");
+
+
+
+  const botones = [
+
+    btnCaras,
+
+    btnAristas,
+
+    btnVertices,
+
+    btnDesarrollo,
+
+    btnReiniciar
+
+  ];
+
+
+
+  let carasActivas = false;
+
+  let aristasActivas = false;
+
+  let verticesActivos = false;
+
+  let desarrolloActivo = false;
+
+
+
+
+  /* ===================================================== */
+  /*             MOSTRAR MENSAJE                          */
+  /* ===================================================== */
+
+
+  function mostrarMensaje(texto) {
+
+    informacion.innerHTML = texto;
+
+    informacion.style.display = "block";
+
+  }
+
+
+
+  function ocultarMensaje() {
+
+    informacion.style.display = "none";
+
+  }
+
+
+
+
+  /* ===================================================== */
+  /*              ACTIVAR / DESACTIVAR                     */
+  /* ===================================================== */
+
+
+  function mostrarElementos(lista, mostrar) {
+
+    lista.forEach(elemento => {
+
+      elemento.setAttribute(
+        "visible",
+        mostrar
+      );
 
     });
 
-
-    target.addEventListener("targetLost", () => {
-
-      botonCaras.disabled = true;
-      informacion.style.display = "none";
-
-    });
+  }
 
 
-    botonCaras.addEventListener("click", () => {
 
-      informacion.style.display = "block";
 
-    });
 
-  </script>
+  /* ===================================================== */
+  /*                 REGRESAR AL CUBO                      */
+  /* ===================================================== */
+
+
+  function regresarCubo() {
+
+    desarrolloActivo = false;
+
+    desarrollo.setAttribute(
+      "visible",
+      false
+    );
+
+
+    grupoCubo.setAttribute(
+      "visible",
+      true
+    );
+
+
+    btnDesarrollo.textContent =
+      "DESARROLLO";
+
+  }
+
+
+
+
+
+  /* ===================================================== */
+  /*                     REINICIAR                         */
+  /* ===================================================== */
+
+
+  function reiniciar() {
+
+
+    carasActivas = false;
+
+    aristasActivas = false;
+
+    verticesActivos = false;
+
+    desarrolloActivo = false;
+
+
+
+    mostrarElementos(
+      caras,
+      false
+    );
+
+
+    mostrarElementos(
+      aristas,
+      false
+    );
+
+
+    mostrarElementos(
+      vertices,
+      false
+    );
+
+
+
+    grupoCubo.setAttribute(
+      "visible",
+      true
+    );
+
+
+    desarrollo.setAttribute(
+      "visible",
+      false
+    );
+
+
+
+    btnCaras.textContent =
+      "CARAS";
+
+
+    btnAristas.textContent =
+      "ARISTAS";
+
+
+    btnVertices.textContent =
+      "VÉRTICES";
+
+
+    btnDesarrollo.textContent =
+      "DESARROLLO";
+
+
+    ocultarMensaje();
+
+  }
+
+
+
+
+
+  /* ===================================================== */
+  /*              CUANDO ENCUENTRA IMAGEN                  */
+  /* ===================================================== */
+
+
+  target.addEventListener(
+
+    "targetFound",
+
+    () => {
+
+
+      estado.textContent =
+        "Imagen detectada ✓";
+
+
+      botones.forEach(
+        boton => boton.disabled = false
+      );
+
+    }
+
+  );
+
+
+
+
+
+  /* ===================================================== */
+  /*               CUANDO PIERDE IMAGEN                    */
+  /* ===================================================== */
+
+
+  target.addEventListener(
+
+    "targetLost",
+
+    () => {
+
+
+      estado.textContent =
+        "Buscando imagen...";
+
+
+      botones.forEach(
+        boton => boton.disabled = true
+      );
+
+
+      ocultarMensaje();
+
+    }
+
+  );
+
+
+
+
+
+  /* ===================================================== */
+  /*                       CARAS                            */
+  /* ===================================================== */
+
+
+  btnCaras.addEventListener(
+
+    "click",
+
+    () => {
+
+
+      regresarCubo();
+
+
+      carasActivas =
+        !carasActivas;
+
+
+      mostrarElementos(
+        caras,
+        carasActivas
+      );
+
+
+      if (carasActivas) {
+
+
+        btnCaras.textContent =
+          "OCULTAR CARAS";
+
+
+        mostrarMensaje(
+
+          "🟨 El cubo tiene <strong>6 caras</strong>.<br>" +
+
+          "Todas sus caras son cuadrados congruentes."
+
+        );
+
+
+      } else {
+
+
+        btnCaras.textContent =
+          "CARAS";
+
+
+        ocultarMensaje();
+
+      }
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ===================================================== */
+  /*                       ARISTAS                          */
+  /* ===================================================== */
+
+
+  btnAristas.addEventListener(
+
+    "click",
+
+    () => {
+
+
+      regresarCubo();
+
+
+      aristasActivas =
+        !aristasActivas;
+
+
+      mostrarElementos(
+        aristas,
+        aristasActivas
+      );
+
+
+      if (aristasActivas) {
+
+
+        btnAristas.textContent =
+          "OCULTAR ARISTAS";
+
+
+        mostrarMensaje(
+
+          "🟥 El cubo tiene <strong>12 aristas</strong>.<br>" +
+
+          "Cada arista es el segmento donde se unen dos caras."
+
+        );
+
+
+      } else {
+
+
+        btnAristas.textContent =
+          "ARISTAS";
+
+
+        ocultarMensaje();
+
+      }
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ===================================================== */
+  /*                      VÉRTICES                          */
+  /* ===================================================== */
+
+
+  btnVertices.addEventListener(
+
+    "click",
+
+    () => {
+
+
+      regresarCubo();
+
+
+      verticesActivos =
+        !verticesActivos;
+
+
+      mostrarElementos(
+        vertices,
+        verticesActivos
+      );
+
+
+      if (verticesActivos) {
+
+
+        btnVertices.textContent =
+          "OCULTAR VÉRTICES";
+
+
+        mostrarMensaje(
+
+          "🟢 El cubo tiene <strong>8 vértices</strong>.<br>" +
+
+          "En cada vértice se encuentran tres aristas."
+
+        );
+
+
+      } else {
+
+
+        btnVertices.textContent =
+          "VÉRTICES";
+
+
+        ocultarMensaje();
+
+      }
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ===================================================== */
+  /*                   DESARROLLO PLANO                    */
+  /* ===================================================== */
+
+
+  btnDesarrollo.addEventListener(
+
+    "click",
+
+    () => {
+
+
+      desarrolloActivo =
+        !desarrolloActivo;
+
+
+
+      if (desarrolloActivo) {
+
+
+        grupoCubo.setAttribute(
+          "visible",
+          false
+        );
+
+
+        desarrollo.setAttribute(
+          "visible",
+          true
+        );
+
+
+        btnDesarrollo.textContent =
+          "VER CUBO";
+
+
+        mostrarMensaje(
+
+          "📐 Este es un <strong>desarrollo plano del cubo</strong>.<br>" +
+
+          "Está formado por sus 6 caras cuadradas."
+
+        );
+
+
+      } else {
+
+
+        grupoCubo.setAttribute(
+          "visible",
+          true
+        );
+
+
+        desarrollo.setAttribute(
+          "visible",
+          false
+        );
+
+
+        btnDesarrollo.textContent =
+          "DESARROLLO";
+
+
+        ocultarMensaje();
+
+      }
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ===================================================== */
+  /*                     REINICIAR                         */
+  /* ===================================================== */
+
+
+  btnReiniciar.addEventListener(
+
+    "click",
+
+    () => {
+
+      reiniciar();
+
+    }
+
+  );
+
+
+</script>
+
 
 </body>
+
 </html>
