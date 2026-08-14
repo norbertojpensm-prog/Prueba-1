@@ -12,9 +12,14 @@
 
   <title>Laboratorio RA - Modelo 3D</title>
 
+
+  <!-- A-FRAME -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
+
+  <!-- MINDAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
 
   <style>
 
@@ -24,48 +29,102 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
+
+    /* ----------------------------- */
+    /* ESTADO                        */
+    /* ----------------------------- */
+
     #estado {
+
       position: fixed;
-      top: 12px;
-      right: 12px;
+
+      top: 15px;
+      left: 50%;
+
+      transform: translateX(-50%);
+
       z-index: 9999;
-      background: rgba(0,0,0,0.70);
+
+      background: rgba(0, 0, 0, 0.75);
+
       color: white;
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-size: 13px;
+
+      padding: 9px 14px;
+
+      border-radius: 12px;
+
+      font-size: 14px;
+
+      text-align: center;
+
+      white-space: nowrap;
+
     }
 
+
+    /* ----------------------------- */
+    /* CONTROLES                     */
+    /* ----------------------------- */
+
     #controles {
+
       position: fixed;
+
       bottom: 20px;
       left: 0;
       right: 0;
+
       z-index: 9999;
 
       display: flex;
+
       justify-content: center;
-      gap: 10px;
+
+      flex-wrap: wrap;
+
+      gap: 8px;
 
       padding: 0 12px;
+
     }
+
 
     button {
-      border: none;
-      border-radius: 12px;
-      padding: 13px 18px;
 
-      background: white;
-      color: #222;
+      border: none;
+
+      border-radius: 12px;
+
+      padding: 13px 16px;
+
+      font-size: 14px;
 
       font-weight: bold;
-      font-size: 15px;
 
-      box-shadow: 0 3px 9px rgba(0,0,0,0.35);
+      background: white;
+
+      color: #222;
+
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+
+      cursor: pointer;
+
     }
 
+
+    button:active {
+
+      transform: scale(0.95);
+
+    }
+
+
     button:disabled {
-      opacity: 0.4;
+
+      opacity: 0.35;
+
+      cursor: default;
+
     }
 
   </style>
@@ -73,12 +132,21 @@
 </head>
 
 
+
 <body>
 
 
+
+<!-- ====================================================== -->
+<!--                 ESCENA DE MINDAR                       -->
+<!-- ====================================================== -->
+
 <a-scene
 
-  mindar-image="imageTargetSrc: ./targets.mind;"
+  mindar-image="
+    imageTargetSrc: ./targets.mind;
+    autoStart: true;
+  "
 
   vr-mode-ui="enabled: false"
 
@@ -86,10 +154,17 @@
 
   embedded
 
+  renderer="
+    colorManagement: true;
+    physicallyCorrectLights: true;
+  "
+
 >
 
 
-  <!-- MODELO 3D -->
+  <!-- ==================================================== -->
+  <!-- RECURSOS                                             -->
+  <!-- ==================================================== -->
 
   <a-assets>
 
@@ -101,7 +176,10 @@
   </a-assets>
 
 
-  <!-- CÁMARA -->
+
+  <!-- ==================================================== -->
+  <!-- CÁMARA                                               -->
+  <!-- ==================================================== -->
 
   <a-camera
 
@@ -113,7 +191,9 @@
 
 
 
-  <!-- IMAGEN OBJETIVO -->
+  <!-- ==================================================== -->
+  <!-- IMAGEN QUE MINDAR DEBE RECONOCER                     -->
+  <!-- ==================================================== -->
 
   <a-entity
 
@@ -124,13 +204,14 @@
   >
 
 
-    <!-- CONTENEDOR DEL MODELO -->
+
+    <!-- ================================================== -->
+    <!-- CONTENEDOR DEL MODELO 3D                           -->
+    <!-- ================================================== -->
 
     <a-entity
 
-      id="modelo"
-
-      gltf-model="#modelo3D"
+      id="contenedorModelo"
 
       position="0 0 0.25"
 
@@ -138,15 +219,29 @@
 
       scale="0.25 0.25 0.25"
 
-      animation="
-        property: rotation;
-        to: 0 360 0;
-        loop: true;
-        dur: 8000;
-        easing: linear;
-      "
-
     >
+
+
+
+      <!-- MODELO GLTF -->
+
+      <a-entity
+
+        id="modelo"
+
+        gltf-model="#modelo3D"
+
+        position="0 0 0"
+
+        rotation="0 0 0"
+
+        scale="1 1 1"
+
+      >
+
+      </a-entity>
+
+
 
     </a-entity>
 
@@ -158,46 +253,99 @@
 
 
 
+
+
+<!-- ====================================================== -->
+<!--                    ESTADO                              -->
+<!-- ====================================================== -->
+
 <div id="estado">
 
-  Buscando imagen...
+  Cargando modelo...
 
 </div>
 
 
+
+
+
+<!-- ====================================================== -->
+<!--                    BOTONES                             -->
+<!-- ====================================================== -->
+
 <div id="controles">
+
 
   <button
     id="btnGirar"
     disabled>
 
-    DETENER GIRO
+    GIRAR
 
   </button>
 
 
   <button
-    id="btnGrande"
+    id="btnAumentar"
     disabled>
 
-    AUMENTAR
+    + TAMAÑO
 
   </button>
 
 
   <button
-    id="btnPequeno"
+    id="btnReducir"
     disabled>
 
-    REDUCIR
+    − TAMAÑO
 
   </button>
+
+
+  <button
+    id="btnArriba"
+    disabled>
+
+    ↑ SUBIR
+
+  </button>
+
+
+  <button
+    id="btnAbajo"
+    disabled>
+
+    ↓ BAJAR
+
+  </button>
+
+
+  <button
+    id="btnReiniciar"
+    disabled>
+
+    REINICIAR
+
+  </button>
+
 
 </div>
 
 
 
+
+
+<!-- ====================================================== -->
+<!--                 PROGRAMACIÓN                           -->
+<!-- ====================================================== -->
+
 <script>
+
+
+  /* ------------------------------------------------------ */
+  /* ELEMENTOS                                              */
+  /* ------------------------------------------------------ */
 
 
   const target =
@@ -208,27 +356,133 @@
     document.querySelector("#modelo");
 
 
+  const contenedorModelo =
+    document.querySelector("#contenedorModelo");
+
+
   const estado =
     document.querySelector("#estado");
+
 
 
   const btnGirar =
     document.querySelector("#btnGirar");
 
 
-  const btnGrande =
-    document.querySelector("#btnGrande");
+  const btnAumentar =
+    document.querySelector("#btnAumentar");
 
 
-  const btnPequeno =
-    document.querySelector("#btnPequeno");
+  const btnReducir =
+    document.querySelector("#btnReducir");
+
+
+  const btnArriba =
+    document.querySelector("#btnArriba");
+
+
+  const btnAbajo =
+    document.querySelector("#btnAbajo");
+
+
+  const btnReiniciar =
+    document.querySelector("#btnReiniciar");
 
 
 
-  let girando = true;
+  const botones = [
+
+    btnGirar,
+    btnAumentar,
+    btnReducir,
+    btnArriba,
+    btnAbajo,
+    btnReiniciar
+
+  ];
+
+
+
+  /* ------------------------------------------------------ */
+  /* VARIABLES                                              */
+  /* ------------------------------------------------------ */
+
 
   let escala = 0.25;
 
+  let posicionY = 0;
+
+  let girando = false;
+
+  let modeloCargado = false;
+
+
+
+  /* ------------------------------------------------------ */
+  /* MODELO CARGADO                                         */
+  /* ------------------------------------------------------ */
+
+
+  modelo.addEventListener(
+
+    "model-loaded",
+
+    () => {
+
+
+      modeloCargado = true;
+
+
+      estado.textContent =
+        "Modelo listo. Busca la imagen...";
+
+
+      console.log(
+        "Modelo 3D cargado correctamente"
+      );
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ------------------------------------------------------ */
+  /* ERROR AL CARGAR MODELO                                 */
+  /* ------------------------------------------------------ */
+
+
+  modelo.addEventListener(
+
+    "model-error",
+
+    (evento) => {
+
+
+      estado.textContent =
+        "Error al cargar el modelo 3D";
+
+
+      console.error(
+        "Error al cargar modelo:",
+        evento.detail
+      );
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ------------------------------------------------------ */
+  /* IMAGEN ENCONTRADA                                      */
+  /* ------------------------------------------------------ */
 
 
   target.addEventListener(
@@ -237,19 +491,44 @@
 
     () => {
 
-      estado.textContent =
-        "Imagen detectada ✓";
 
-      btnGirar.disabled = false;
+      if (modeloCargado) {
 
-      btnGrande.disabled = false;
+        estado.textContent =
+          "Imagen detectada ✓";
 
-      btnPequeno.disabled = false;
+      }
+
+      else {
+
+        estado.textContent =
+          "Imagen detectada - cargando modelo...";
+
+      }
+
+
+      botones.forEach(
+
+        boton => {
+
+          boton.disabled = false;
+
+        }
+
+      );
+
 
     }
 
   );
 
+
+
+
+
+  /* ------------------------------------------------------ */
+  /* IMAGEN PERDIDA                                         */
+  /* ------------------------------------------------------ */
 
 
   target.addEventListener(
@@ -258,19 +537,33 @@
 
     () => {
 
+
       estado.textContent =
-        "Buscando imagen...";
+        "Busca nuevamente la imagen...";
 
-      btnGirar.disabled = true;
 
-      btnGrande.disabled = true;
+      botones.forEach(
 
-      btnPequeno.disabled = true;
+        boton => {
+
+          boton.disabled = true;
+
+        }
+
+      );
+
 
     }
 
   );
 
+
+
+
+
+  /* ------------------------------------------------------ */
+  /* GIRAR / DETENER                                        */
+  /* ------------------------------------------------------ */
 
 
   btnGirar.addEventListener(
@@ -280,33 +573,58 @@
     () => {
 
 
-      if (girando) {
+      if (girando === false) {
 
-        modelo.removeAttribute("animation");
+
+        contenedorModelo.setAttribute(
+
+          "animation__giro",
+
+          {
+
+            property: "rotation",
+
+            from: "0 0 0",
+
+            to: "0 360 0",
+
+            loop: true,
+
+            dur: 8000,
+
+            easing: "linear"
+
+          }
+
+        );
+
+
+        girando = true;
+
 
         btnGirar.textContent =
-          "GIRAR";
+          "DETENER GIRO";
 
-        girando = false;
 
       }
 
       else {
 
-        modelo.setAttribute(
 
-          "animation",
-
-          "property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
-
+        contenedorModelo.removeAttribute(
+          "animation__giro"
         );
 
-        btnGirar.textContent =
-          "DETENER GIRO";
 
-        girando = true;
+        girando = false;
+
+
+        btnGirar.textContent =
+          "GIRAR";
+
 
       }
+
 
     }
 
@@ -314,15 +632,24 @@
 
 
 
-  btnGrande.addEventListener(
+
+
+  /* ------------------------------------------------------ */
+  /* AUMENTAR                                               */
+  /* ------------------------------------------------------ */
+
+
+  btnAumentar.addEventListener(
 
     "click",
 
     () => {
 
-      escala += 0.05;
 
-      modelo.setAttribute(
+      escala = escala + 0.05;
+
+
+      contenedorModelo.setAttribute(
 
         "scale",
 
@@ -330,19 +657,28 @@
 
       );
 
+
     }
 
   );
 
 
 
-  btnPequeno.addEventListener(
+
+
+  /* ------------------------------------------------------ */
+  /* REDUCIR                                                */
+  /* ------------------------------------------------------ */
+
+
+  btnReducir.addEventListener(
 
     "click",
 
     () => {
 
-      escala -= 0.05;
+
+      escala = escala - 0.05;
 
 
       if (escala < 0.05) {
@@ -352,13 +688,158 @@
       }
 
 
-      modelo.setAttribute(
+      contenedorModelo.setAttribute(
 
         "scale",
 
         `${escala} ${escala} ${escala}`
 
       );
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ------------------------------------------------------ */
+  /* SUBIR MODELO                                           */
+  /* ------------------------------------------------------ */
+
+
+  btnArriba.addEventListener(
+
+    "click",
+
+    () => {
+
+
+      posicionY = posicionY + 0.05;
+
+
+      contenedorModelo.setAttribute(
+
+        "position",
+
+        `0 ${posicionY} 0.25`
+
+      );
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ------------------------------------------------------ */
+  /* BAJAR MODELO                                           */
+  /* ------------------------------------------------------ */
+
+
+  btnAbajo.addEventListener(
+
+    "click",
+
+    () => {
+
+
+      posicionY = posicionY - 0.05;
+
+
+      contenedorModelo.setAttribute(
+
+        "position",
+
+        `0 ${posicionY} 0.25`
+
+      );
+
+
+    }
+
+  );
+
+
+
+
+
+  /* ------------------------------------------------------ */
+  /* REINICIAR                                              */
+  /* ------------------------------------------------------ */
+
+
+  btnReiniciar.addEventListener(
+
+    "click",
+
+    () => {
+
+
+      /* DETENER GIRO */
+
+
+      contenedorModelo.removeAttribute(
+        "animation__giro"
+      );
+
+
+      girando = false;
+
+
+      btnGirar.textContent =
+        "GIRAR";
+
+
+
+      /* ESCALA ORIGINAL */
+
+
+      escala = 0.25;
+
+
+      contenedorModelo.setAttribute(
+
+        "scale",
+
+        "0.25 0.25 0.25"
+
+      );
+
+
+
+      /* POSICIÓN ORIGINAL */
+
+
+      posicionY = 0;
+
+
+      contenedorModelo.setAttribute(
+
+        "position",
+
+        "0 0 0.25"
+
+      );
+
+
+
+      /* ROTACIÓN ORIGINAL */
+
+
+      contenedorModelo.setAttribute(
+
+        "rotation",
+
+        "0 0 0"
+
+      );
+
 
     }
 
