@@ -1,5 +1,373 @@
-<a-gltf-model
-  src="./scene.gltf"
-  position="0 0 0.2"
-  scale="0.3 0.3 0.3">
-</a-gltf-model>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  >
+
+  <title>Laboratorio RA - Modelo 3D</title>
+
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #estado {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 9999;
+      background: rgba(0,0,0,0.70);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    #controles {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+
+      padding: 0 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 18px;
+
+      background: white;
+      color: #222;
+
+      font-weight: bold;
+      font-size: 15px;
+
+      box-shadow: 0 3px 9px rgba(0,0,0,0.35);
+    }
+
+    button:disabled {
+      opacity: 0.4;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<a-scene
+
+  mindar-image="imageTargetSrc: ./targets.mind;"
+
+  vr-mode-ui="enabled: false"
+
+  device-orientation-permission-ui="enabled: false"
+
+  embedded
+
+>
+
+
+  <!-- MODELO 3D -->
+
+  <a-assets>
+
+    <a-asset-item
+      id="modelo3D"
+      src="./scene.gltf">
+    </a-asset-item>
+
+  </a-assets>
+
+
+  <!-- CÁMARA -->
+
+  <a-camera
+
+    position="0 0 0"
+
+    look-controls="enabled: false">
+
+  </a-camera>
+
+
+
+  <!-- IMAGEN OBJETIVO -->
+
+  <a-entity
+
+    id="target"
+
+    mindar-image-target="targetIndex: 0"
+
+  >
+
+
+    <!-- CONTENEDOR DEL MODELO -->
+
+    <a-entity
+
+      id="modelo"
+
+      gltf-model="#modelo3D"
+
+      position="0 0 0.25"
+
+      rotation="0 0 0"
+
+      scale="0.25 0.25 0.25"
+
+      animation="
+        property: rotation;
+        to: 0 360 0;
+        loop: true;
+        dur: 8000;
+        easing: linear;
+      "
+
+    >
+
+    </a-entity>
+
+
+  </a-entity>
+
+
+</a-scene>
+
+
+
+<div id="estado">
+
+  Buscando imagen...
+
+</div>
+
+
+<div id="controles">
+
+  <button
+    id="btnGirar"
+    disabled>
+
+    DETENER GIRO
+
+  </button>
+
+
+  <button
+    id="btnGrande"
+    disabled>
+
+    AUMENTAR
+
+  </button>
+
+
+  <button
+    id="btnPequeno"
+    disabled>
+
+    REDUCIR
+
+  </button>
+
+</div>
+
+
+
+<script>
+
+
+  const target =
+    document.querySelector("#target");
+
+
+  const modelo =
+    document.querySelector("#modelo");
+
+
+  const estado =
+    document.querySelector("#estado");
+
+
+  const btnGirar =
+    document.querySelector("#btnGirar");
+
+
+  const btnGrande =
+    document.querySelector("#btnGrande");
+
+
+  const btnPequeno =
+    document.querySelector("#btnPequeno");
+
+
+
+  let girando = true;
+
+  let escala = 0.25;
+
+
+
+  target.addEventListener(
+
+    "targetFound",
+
+    () => {
+
+      estado.textContent =
+        "Imagen detectada ✓";
+
+      btnGirar.disabled = false;
+
+      btnGrande.disabled = false;
+
+      btnPequeno.disabled = false;
+
+    }
+
+  );
+
+
+
+  target.addEventListener(
+
+    "targetLost",
+
+    () => {
+
+      estado.textContent =
+        "Buscando imagen...";
+
+      btnGirar.disabled = true;
+
+      btnGrande.disabled = true;
+
+      btnPequeno.disabled = true;
+
+    }
+
+  );
+
+
+
+  btnGirar.addEventListener(
+
+    "click",
+
+    () => {
+
+
+      if (girando) {
+
+        modelo.removeAttribute("animation");
+
+        btnGirar.textContent =
+          "GIRAR";
+
+        girando = false;
+
+      }
+
+      else {
+
+        modelo.setAttribute(
+
+          "animation",
+
+          "property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
+
+        );
+
+        btnGirar.textContent =
+          "DETENER GIRO";
+
+        girando = true;
+
+      }
+
+    }
+
+  );
+
+
+
+  btnGrande.addEventListener(
+
+    "click",
+
+    () => {
+
+      escala += 0.05;
+
+      modelo.setAttribute(
+
+        "scale",
+
+        `${escala} ${escala} ${escala}`
+
+      );
+
+    }
+
+  );
+
+
+
+  btnPequeno.addEventListener(
+
+    "click",
+
+    () => {
+
+      escala -= 0.05;
+
+
+      if (escala < 0.05) {
+
+        escala = 0.05;
+
+      }
+
+
+      modelo.setAttribute(
+
+        "scale",
+
+        `${escala} ${escala} ${escala}`
+
+      );
+
+    }
+
+  );
+
+
+</script>
+
+
+</body>
+
+</html>
